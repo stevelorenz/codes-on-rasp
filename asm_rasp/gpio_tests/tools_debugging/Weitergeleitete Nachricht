@@ -1,0 +1,364 @@
+Return-Path: <leon.urbas@tu-dresden.de>
+Received: from server-30 (server-30-tg [10.30.8.30]) by cyrus-sol (Cyrus v2.3.16) with LMTPSA (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256/256 verify=YES); Sat, 07 Nov 2015 13:45:13 +0100
+X-Sieve: CMU Sieve 2.3
+Received: from mailin1.zih.tu-dresden.de ([141.30.67.64]) by server-30 with esmtp (Exim 4.76) (envelope-from <leon.urbas@tu-dresden.de>) id 1Zv2ro-00063M-Uj for sching@mail.zih.tu-dresden.de; Sat, 07 Nov 2015 13:45:12 +0100
+Received: from mailout1.zih.tu-dresden.de ([141.30.67.72]) by mailin1.zih.tu-dresden.de with esmtp (Exim 4.63) (envelope-from <leon.urbas@tu-dresden.de>) id 1Zv2rl-0001LU-Je for Roland.Schingnitz@tu-dresden.de; Sat, 07 Nov 2015 13:45:12 +0100
+Received: from [172.26.34.102] (helo=msx.tu-dresden.de) by mailout1.zih.tu-dresden.de with esmtp (Exim 4.63) (envelope-from <leon.urbas@tu-dresden.de>) id 1Zv2rl-0004rV-Fn for Roland.Schingnitz@tu-dresden.de; Sat, 07 Nov 2015 13:45:09 +0100
+X-CrossPremisesHeadersFilteredBySendConnector: MSX-L102.msx.ad.zih.tu-dresden.de
+Received: from MSX-L104.msx.ad.zih.tu-dresden.de (172.26.34.104) by MSX-L102.msx.ad.zih.tu-dresden.de (172.26.34.102) with Microsoft SMTP Server (TLS) id 15.0.1104.5; Sat, 7 Nov 2015 13:45:09 +0100
+Received: from MSX-L104.msx.ad.zih.tu-dresden.de ([fe80::401b:9e5:b795:cf63]) by MSX-L104.msx.ad.zih.tu-dresden.de ([fe80::401b:9e5:b795:cf63%23]) with mapi id 15.00.1104.000; Sat, 7 Nov 2015 13:45:08 +0100
+From: "Urbas, Leonhard" <leon.urbas@tu-dresden.de>
+To: "Iatrou, Chris Paul" <chris_paul.iatrou@tu-dresden.de>, Schingnitz <Roland.Schingnitz@tu-dresden.de>
+Subject: AW: [MRT-1] Memory Mapping
+Thread-Topic: [MRT-1] Memory Mapping
+Thread-Index: AdEYwlcssSU8/begTS+F5C0dHu5avQAla3IA
+Date: Sat, 07 Nov 2015 12:45:07 +0000
+Message-ID: <96272312dac84f4184b8089aaa47d72d@MSX-L104.msx.ad.zih.tu-dresden.de>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: yes
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [109.44.0.198]
+Content-Type: multipart/signed; boundary="----=_NextPart_000_002A_01D11962.7D5818F0"; micalg="SHA1"; protocol="application/x-pkcs7-signature"
+MIME-Version: 1.0
+X-OrganizationHeadersPreserved: MSX-L102.msx.ad.zih.tu-dresden.de
+X-TUD-Virus-Scanned: mailout1.zih.tu-dresden.de
+X-TUD-Spam-Status: No, hits=-8.0 required=5 tests=[LOCAL_TUD_RCVD=-8] 
+X-TUD-Spam-Level: --------
+
+
+------=_NextPart_000_002A_01D11962.7D5818F0
+Content-Type: multipart/mixed; boundary="----=_NextPart_001_002B_01D11962.7D5818F0"
+
+
+------=_NextPart_001_002B_01D11962.7D5818F0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Lieber Chris, sehr geehrter Herr Dr. Schingnitz,
+
+anbei der Assembler-Code f=FCr den RasPI, der Einfachheit halber derzeit =
+nur das Setzen der gr=FCne statuslampe auf gpio 47.
+
+Ich habe rpi.c so ge=E4ndert, dass es die adresse der  gemappten =
+periphery-register in r0 zur=FCck  liefert.=20
+
+Zudem muss, damit das debuggen klappt, auf /usr/local/sbin das =
+beigef=FCgte script gdbserver installieren und mit chmod a+x executable =
+gemacht werden.
+
+Zum Testen: Dateien in ein Eclipse-cross-compile-Projekt (mit as als =
+cross gcc assembler und flags -g- -gstubs) ablegen, build, =
+remote-debugger starten.
+
+Das werde ich am Montag im Unterricht machen - inclusive =
+broadcom-Handbuch lesen.=20
+
+Eine abschlie=DFende selbstst=E4ndige =DCbung w=E4re m.E. das zu =
+generalisieren, d.h. den Port als freie Variable in einem Register zu =
+haben.=20
+
+Das Assemblerpraktikum k=F6nnte dann sein, wie gehabt das Matrix-Display =
+anzusteuern, diesmal eben =FCber die GPIO des RasPI.=20
+
+Beste Gr=FC=DFe,
+Leon Urbas
+
+
+> -----Urspr=FCngliche Nachricht-----
+> Von: Urbas, Leonhard
+> Gesendet: Freitag, 6. November 2015 19:49
+> An: Chris Paul Iatrou (chris_paul.iatrou@tu-dresden.de)
+> Cc: 'Schingnitz'
+> Betreff: [MRT-1] Memory Mapping
+>=20
+> Lieber Chris,
+>=20
+> hab's zumindest prinzipiell geknackt, wir m=FCssen jetzt nur noch =
+main.c
+durch
+> main.S ersetzen.
+>=20
+> Nach dem Aufruf des mappings haben wir die GPIO-Base-Adresse
+beispielsweise
+> in R1 und k=F6nnen dann die peripherie wie in
+> datasheet_broadcom_bcm2835_soc.pdf, Seiten 89 ff beschrieben
+> programmieren.
+>=20
+> -lu
+> --
+> Prof. Dr.-Ing. Leon Urbas
+>=20
+> Technische Universit=E4t Dresden
+> Fakult=E4t Elektrotechnik und Informationstechnik / Fakult=E4t =
+Maschinenwesen
+> Institut f=FCr Automatisierungstechnik / Institut f=FCr =
+Verfahrenstechnik und
+> Umwelttechnik
+> Professur f=FCr Prozessleittechnik / AG Systemverfahrenstechnik
+> 01062 Dresden
+>=20
+> Tel.  : +49 (351) 463-39614
+> Fax.  : +49 (351) 463-39681
+> mobile: +49 (177) 466-5201
+> E-Mail: leon.urbas@tu-dresden.de
+> WWW   : http://www.et.tu-dresden.de/ifa/index.php?id=3Durbas
+
+
+------=_NextPart_001_002B_01D11962.7D5818F0
+Content-Type: text/plain; name="main.S"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename="main.S"
+
+.extern sleep=0A=
+.extern map_peripheral=0A=
+.equ LED, 47=0A=
+.text=0A=
+.balign 4=0A=
+.global main=0A=
+.func main=0A=
+=0A=
+=0A=
+main:=0A=
+	/* save registers and return address */=0A=
+	push {r4-r11, lr}=0A=
+	/* call routine to initialize memory mapping */=0A=
+	bl map_peripheral=0A=
+	mov r9, r0=0A=
+=0A=
+	/* set GPIO 47 to output */=0A=
+	ldr r3, [r9, #(4 * (47/10))]=0A=
+	and r3, #~(7 << (7*3))=0A=
+	str r3, [r9, #(4 * (47/10))]=0A=
+	orr r3, #(1 << (7*3))=0A=
+	str r3, [r9, #(4 * (47/10))]=0A=
+=0A=
+	/* set LED 47 */=0A=
+	movs r3, #(1 << (47-32))=0A=
+	str r3, [r9, #(4*8)]=0A=
+=0A=
+end_main: /* restore registers and return */=0A=
+	mov r0, #0=0A=
+	pop {r4-r11, pc}=0A=
+
+------=_NextPart_001_002B_01D11962.7D5818F0
+Content-Type: text/plain; name="rpi.c"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename="rpi.c"
+
+#include "rpi.h"=0A=
+#include <fcntl.h>=0A=
+ =0A=
+struct bcm2835_peripheral gpio =3D {GPIO_BASE};=0A=
+ =0A=
+// Exposes the physical address defined in the passed structure using =
+mmap on /dev/mem=0A=
+volatile unsigned int * map_peripheral()=0A=
+{=0A=
+   // Open /dev/mem=0A=
+   if ((gpio.mem_fd =3D open("/dev/mem", O_RDWR|O_SYNC) ) < 0) {=0A=
+      printf("Failed to open /dev/mem, try checking permissions.\n");=0A=
+      return -1;=0A=
+   }=0A=
+ =0A=
+   gpio.map =3D mmap(=0A=
+      NULL,=0A=
+      BLOCK_SIZE,=0A=
+      PROT_READ|PROT_WRITE,=0A=
+      MAP_SHARED,=0A=
+      gpio.mem_fd,      // File descriptor to physical memory virtual =
+file '/dev/mem'=0A=
+      gpio.addr_p       // Address in physical map that we want this =
+memory block to expose=0A=
+   );=0A=
+ =0A=
+   if (gpio.map =3D=3D MAP_FAILED) {=0A=
+        perror("mmap");=0A=
+        return NULL;=0A=
+   }=0A=
+ =0A=
+   return gpio.addr =3D (volatile unsigned int *)gpio.map;=0A=
+}=0A=
+ =0A=
+void unmap_peripheral() {=0A=
+    munmap(gpio.map, BLOCK_SIZE);=0A=
+    close(gpio.mem_fd);=0A=
+}=0A=
+
+------=_NextPart_001_002B_01D11962.7D5818F0
+Content-Type: text/plain; name="rpi.h"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename="rpi.h"
+
+#include <stdio.h>=0A=
+ =0A=
+#include <sys/mman.h>=0A=
+#include <sys/types.h>=0A=
+#include <sys/stat.h>=0A=
+ =0A=
+#include <unistd.h>=0A=
+ =0A=
+//RPi 1 #define BCM2708_PERI_BASE       0x20000000=0A=
+#define BCM2708_PERI_BASE 	0x3f000000=0A=
+=0A=
+#define GPIO_BASE               (BCM2708_PERI_BASE + 0x200000)	// GPIO =
+controller =0A=
+ =0A=
+#define BLOCK_SIZE 		(4*1024)=0A=
+ =0A=
+// IO Acces=0A=
+struct bcm2835_peripheral {=0A=
+    unsigned long addr_p;=0A=
+    int mem_fd;=0A=
+    void *map;=0A=
+    volatile unsigned int *addr;=0A=
+};=0A=
+ =0A=
+// struct bcm2835_peripheral gpio =3D {GPIO_BASE};=0A=
+ =0A=
+extern struct bcm2835_peripheral gpio;  // They have to be found =
+somewhere, but can't be in the header=0A=
+=0A=
+// GPIO setup macros. Always use INP_GPIO(x) before using OUT_GPIO(x)=0A=
+#define READ_GPIO(g) *(gpio.addr + ((g)/10))=0A=
+#define INP_GPIO(g)   *(gpio.addr + ((g)/10)) &=3D ~(7<<(((g)%10)*3))=0A=
+#define OUT_GPIO(g)   *(gpio.addr + ((g)/10)) |=3D  (1<<(((g)%10)*3))=0A=
+#define SET_GPIO_ALT(g,a) *(gpio.addr + (((g)/10))) |=3D (((a)<=3D3?(a) =
++ 4:(a)=3D=3D4?3:2)<<(((g)%10)*3))=0A=
+ =0A=
+#define GPIO_SET  *(gpio.addr + 7)  // sets   bits which are 1 ignores =
+bits which are 0=0A=
+#define GPIO_SET2  *(gpio.addr + 8)  // sets   bits which are 1 ignores =
+bits which are 0=0A=
+#define GPIO_CLR  *(gpio.addr + 10) // clears bits which are 1 ignores =
+bits which are 0=0A=
+#define GPIO_CLR2 *(gpio.addr + 11) // clears bits which are 1 ignores =
+bits which are 0=0A=
+ =0A=
+#define GPIO_READ(g)  *(gpio.addr + 13) &=3D (1<<(g))=0A=
+
+------=_NextPart_001_002B_01D11962.7D5818F0
+Content-Type: application/octet-stream; name="gdbserver.dat"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment; filename="gdbserver.dat"
+
+#!/bin/bash=0A=
+sudo /usr/bin/gdbserver $*=0A=
+
+------=_NextPart_001_002B_01D11962.7D5818F0--
+
+------=_NextPart_000_002A_01D11962.7D5818F0
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIITsjCCA58w
+ggKHoAMCAQICASYwDQYJKoZIhvcNAQEFBQAwcTELMAkGA1UEBhMCREUxHDAaBgNVBAoTE0RldXRz
+Y2hlIFRlbGVrb20gQUcxHzAdBgNVBAsTFlQtVGVsZVNlYyBUcnVzdCBDZW50ZXIxIzAhBgNVBAMT
+GkRldXRzY2hlIFRlbGVrb20gUm9vdCBDQSAyMB4XDTk5MDcwOTEyMTEwMFoXDTE5MDcwOTIzNTkw
+MFowcTELMAkGA1UEBhMCREUxHDAaBgNVBAoTE0RldXRzY2hlIFRlbGVrb20gQUcxHzAdBgNVBAsT
+FlQtVGVsZVNlYyBUcnVzdCBDZW50ZXIxIzAhBgNVBAMTGkRldXRzY2hlIFRlbGVrb20gUm9vdCBD
+QSAyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqwujNeCLKRSxFIWvPBDkOW81XUqu
+3ephjZVJ9G9koxpgZqSpQCKE2dSl5XiTDmgBrblNXDrO07ioQkDfz6O6gllqkhusHJraCCslJ/lp
+I0fx4Ossepv1EwLQfjR8wp48AFmr9doM9TI8K6xQ2tbD3oOUyqgMmTIOCEhWW2r72uFYWAFJX3JB
+PBUGAY5draq4k7TNnuun6GotUjTbOu9cdVHa2/Mx+e5xmDLEVBVEDPmbVe2t3xgIoKOGiknuUwWP
+GUzV3lh5m9JqHEKrxdWnz2gPluThYZh2YciRfNY+AOKRUIfhnQrmrZfSHcY6fcu82gM01Y5bAfVq
+B7cWtm5KfwIDAQABo0IwQDAdBgNVHQ4EFgQUMcN5G7r1U9cX4Il6LRdsCrMrnTMwDwYDVR0TBAgw
+BgEB/wIBBTAOBgNVHQ8BAf8EBAMCAQYwDQYJKoZIhvcNAQEFBQADggEBAJRkWa05ZOcp6xP+WsOL
+E1fIBCTwdHfAYONn++mJpoO/loJ8btTDPe+egG67KbSYerE7VOs5F0d+Go4L/B8xWTEEss4X8yzH
+YjZV4iLYiVW0mEiqZPrWHDbYRHhaWiM6V5f1ejBPrp9qTEsrjqAD4z7gqdTSe9KzqOJyPK2e/4BZ
+5JtFtPY7sM05GZgy5eohYZDkMSGONLH3LzVKhRDa54o3Ib5ZY+DyhYgxU9RUFIVwefQuBncndS8f
+uIr5/sW62Dbkg+znZbe/Y1rzRq+BlDfUQYzWI9Yez/VoG0Rjolq6pzVZoeVwBZsOI1eZlAptujlj
+KIaS8xiE2PvRzwVWZFcwggTVMIIDvaADAgECAghQTsb1PRG0ZDANBgkqhkiG9w0BAQsFADBxMQsw
+CQYDVQQGEwJERTEcMBoGA1UEChMTRGV1dHNjaGUgVGVsZWtvbSBBRzEfMB0GA1UECxMWVC1UZWxl
+U2VjIFRydXN0IENlbnRlcjEjMCEGA1UEAxMaRGV1dHNjaGUgVGVsZWtvbSBSb290IENBIDIwHhcN
+MTQwNzIyMTIwODI2WhcNMTkwNzA5MjM1OTAwWjBaMQswCQYDVQQGEwJERTETMBEGA1UEChMKREZO
+LVZlcmVpbjEQMA4GA1UECxMHREZOLVBLSTEkMCIGA1UEAxMbREZOLVZlcmVpbiBQQ0EgR2xvYmFs
+IC0gRzAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ZvDZ4X5Da71jVTDllA1PWLp
+bkztlNcAW5UidNQg6zSP1uzAMQQLmYHiphTSUqAoI4SLdIkEXlvg4njBeMsWyyg1OXstkEXQ7aAA
+eny/Sg4bAMOG6VwrMRF7DPOCJEOMHDiLamgAmu7cT3ir0sYTm3at7t4m6O8Br3QPwQmi9mvOvdPN
+FDBP9eXjpMhim4IaAycwDQJlYE3t0QkjKpY1WCfTdsZxtpAdxO3/NYZ9bzOz2w/FEcKKg6GUXUFr
+2NIQ9Uz9ylGs2b3vkoO72uuLFlZWQ8/h1RM9ph8nMM1JVNvJEzSacXXFbOqnC5j5IZ0nrz6jOTlI
+aoytyZn7wxLyvQIDAQABo4IBhjCCAYIwDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRJt8bP6D0f
+f+pEexMp9/EKcD7eZDAfBgNVHSMEGDAWgBQxw3kbuvVT1xfgiXotF2wKsyudMzASBgNVHRMBAf8E
+CDAGAQH/AgECMGIGA1UdIARbMFkwEQYPKwYBBAGBrSGCLAEBBAICMBEGDysGAQQBga0hgiwBAQQD
+ADARBg8rBgEEAYGtIYIsAQEEAwEwDwYNKwYBBAGBrSGCLAEBBDANBgsrBgEEAYGtIYIsHjA+BgNV
+HR8ENzA1MDOgMaAvhi1odHRwOi8vcGtpMDMzNi50ZWxlc2VjLmRlL3JsL0RUX1JPT1RfQ0FfMi5j
+cmwweAYIKwYBBQUHAQEEbDBqMCwGCCsGAQUFBzABhiBodHRwOi8vb2NzcDAzMzYudGVsZXNlYy5k
+ZS9vY3NwcjA6BggrBgEFBQcwAoYuaHR0cDovL3BraTAzMzYudGVsZXNlYy5kZS9jcnQvRFRfUk9P
+VF9DQV8yLmNlcjANBgkqhkiG9w0BAQsFAAOCAQEAYyAo/ZwhhnK+OUZZOTIlvKkBmw3Myn1BnIZt
+Cm4ssxNZdbEzkhthJxb/w7LVNYL7hCoBSb1mu2YvssIGXW4/buMBWlvKQ2NclbbhMacf1QdfTeZl
+gk4y+cN8ekvNTVx07iHydQLsUj7SyWrTkCNuSWc1vn9NVqTszC/Pt6GXqHI+ybxA1lqkCD3WvILD
+t7cyjrEsjmpttzUCGc/1OURYY6ckABCwu/xOr24vOLulV0k/2G5QbyyXltwdRpplic+uzPLl2Z9T
+sz6hL5Kp2AvGhB8Exuse6J99tXulAvEkxSRjETTMWpMgKnmIOiVCkKllO3yG0xIVIyn8LNrMOVtU
+FzCCBWEwggRJoAMCAQICBxekJHloXI4wDQYJKoZIhvcNAQELBQAwWjELMAkGA1UEBhMCREUxEzAR
+BgNVBAoTCkRGTi1WZXJlaW4xEDAOBgNVBAsTB0RGTi1QS0kxJDAiBgNVBAMTG0RGTi1WZXJlaW4g
+UENBIEdsb2JhbCAtIEcwMTAeFw0xNDA1MjcxNDUzMjlaFw0xOTA3MDkyMzU5MDBaMIGFMQswCQYD
+VQQGEwJERTEoMCYGA1UEChMfVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgRHJlc2RlbjEMMAoGA1UE
+CxMDWklIMRwwGgYDVQQDExNUVSBEcmVzZGVuIENBIC0gRzAyMSAwHgYJKoZIhvcNAQkBFhFwa2lA
+dHUtZHJlc2Rlbi5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMEOHpPzRPbs0Cf3
+UHphCwQ0FZP8sR9sY9qA7OEzXDUKPHcgIKKVgKAl4g9CYFlP1FqXHEXbPY4YM9xFO6pxoU+SC10Z
+rDUEUQhf6QZ7ci3PYaVoos+dAEfByn44OPw52C8PjBmpiS+yNoPHVyTaykcdXEsSH/vJt7Ekvd/X
+Nq2o8mQrZ8m4555TPcinviw+qEqfdADlDkTglQeW+HeXhMMWtuYQgye1Gqsn4tobYkJDYb2F8RS/
+F6jdmvrLzwh0b53sdun5cmRlig56dUi2b3P5q3Oj40HF2ZbycPTTEkAbnbFBLA3gdH6q2PQJycy2
+PjXNe/q6XYTuW1G5uo0zeycCAwEAAaOCAf4wggH6MBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
+AQH/BAQDAgEGMBEGA1UdIAQKMAgwBgYEVR0gADAdBgNVHQ4EFgQUxStTkxeDyfVGQu1Dat+2gKZH
+8uAwHwYDVR0jBBgwFoAUSbfGz+g9H3/qRHsTKffxCnA+3mQwHAYDVR0RBBUwE4ERcGtpQHR1LWRy
+ZXNkZW4uZGUwgYgGA1UdHwSBgDB+MD2gO6A5hjdodHRwOi8vY2RwMS5wY2EuZGZuLmRlL2dsb2Jh
+bC1yb290LWNhL3B1Yi9jcmwvY2FjcmwuY3JsMD2gO6A5hjdodHRwOi8vY2RwMi5wY2EuZGZuLmRl
+L2dsb2JhbC1yb290LWNhL3B1Yi9jcmwvY2FjcmwuY3JsMIHXBggrBgEFBQcBAQSByjCBxzAzBggr
+BgEFBQcwAYYnaHR0cDovL29jc3AucGNhLmRmbi5kZS9PQ1NQLVNlcnZlci9PQ1NQMEcGCCsGAQUF
+BzAChjtodHRwOi8vY2RwMS5wY2EuZGZuLmRlL2dsb2JhbC1yb290LWNhL3B1Yi9jYWNlcnQvY2Fj
+ZXJ0LmNydDBHBggrBgEFBQcwAoY7aHR0cDovL2NkcDIucGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1j
+YS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwDQYJKoZIhvcNAQELBQADggEBAImEwEPg6Hg9eFHAQKta
+CiYMOcQsMMWHgU3V7aDSBhsouD+QDSDDpEoiaHgaFNEBsQ3FbYzL60dooWO3BB0FpqeKWTgM3nzW
+OrGOjfuM8TAOY03NPxTiyyLCaQwPZtYza9NxzuUOPaDvD6xHMgnzOLUC0JXjdslPzEFWPQ9CkW6p
+hW9jOAyr4o20afhjKIEAzINjUTM8SC06i83uypdveMYNrvWCp0dYgp/2it8NYJn9jx35j6tKq0EA
+ePR+cDOOciC0m9QiJ/4B/H/hG/HLQwePerq4eE8Vxn1AE+b6/FfadZcQyUlx/UD8iB1qHmFSmSYB
+AhRQmyjxBsTiBcFL8E8wggXNMIIEtaADAgECAgcYLl0sWUgfMA0GCSqGSIb3DQEBCwUAMIGFMQsw
+CQYDVQQGEwJERTEoMCYGA1UEChMfVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgRHJlc2RlbjEMMAoG
+A1UECxMDWklIMRwwGgYDVQQDExNUVSBEcmVzZGVuIENBIC0gRzAyMSAwHgYJKoZIhvcNAQkBFhFw
+a2lAdHUtZHJlc2Rlbi5kZTAeFw0xNDA5MDkxMTA4MTJaFw0xNzA5MDgxMTA4MTJaMHgxCzAJBgNV
+BAYTAkRFMSgwJgYDVQQKEx9UZWNobmlzY2hlIFVuaXZlcnNpdGFldCBEcmVzZGVuMSowKAYDVQQL
+EyFQcm9mZXNzdXIgZnVlciBQcm96ZXNzbGVpdHRlY2huaWsxEzARBgNVBAMTCkxlb24gVXJiYXMw
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCjYQ+UEz/S+B+wDpnip/VzEggIwIwmMQcQ
+gLipLT7/oNosq4PLMYciXbbr3LwEtbRHhGhhakOUM1NLXy9PWxSiX8j8xtu+yAXuYUvp7237w0ea
+tbYRyezFnWZJidi+LDPqQ/KOFWLKXOBaSUHg1IWj/l4yYXLf8cEsp1CcoBaK/QeQcmFocVMIcjhG
+qiF73t67Nk7hG40FyASPO71TGRT/ll4WzfXWEnEF/ttmzOW3ZMaKK5zn9kAQwTI3FDxeP7m6WrP1
+5IB1T7cv5knOTKxuAfKv4AZQYsKBUVGImsynekJJxZRfAcRiymxXytn0NbY3ngWlHIHokqqpBDi/
+auSTAgMBAAGjggJMMIICSDBABgNVHSAEOTA3MBEGDysGAQQBga0hgiwBAQQDAjARBg8rBgEEAYGt
+IYIsAgEEAwEwDwYNKwYBBAGBrSGCLAEBBDAJBgNVHRMEAjAAMAsGA1UdDwQEAwIF4DAdBgNVHSUE
+FjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwHQYDVR0OBBYEFOyqjgqIC7iUlwYu09oq1GzlWilgMB8G
+A1UdIwQYMBaAFMUrU5MXg8n1RkLtQ2rftoCmR/LgMCMGA1UdEQQcMBqBGGxlb24udXJiYXNAdHUt
+ZHJlc2Rlbi5kZTCBiwYDVR0fBIGDMIGAMD6gPKA6hjhodHRwOi8vY2RwMS5wY2EuZGZuLmRlL3R1
+LWRyZXNkZW4tY2EvcHViL2NybC9nX2NhY3JsLmNybDA+oDygOoY4aHR0cDovL2NkcDIucGNhLmRm
+bi5kZS90dS1kcmVzZGVuLWNhL3B1Yi9jcmwvZ19jYWNybC5jcmwwgdkGCCsGAQUFBwEBBIHMMIHJ
+MDMGCCsGAQUFBzABhidodHRwOi8vb2NzcC5wY2EuZGZuLmRlL09DU1AtU2VydmVyL09DU1AwSAYI
+KwYBBQUHMAKGPGh0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvdHUtZHJlc2Rlbi1jYS9wdWIvY2FjZXJ0
+L2dfY2FjZXJ0LmNydDBIBggrBgEFBQcwAoY8aHR0cDovL2NkcDIucGNhLmRmbi5kZS90dS1kcmVz
+ZGVuLWNhL3B1Yi9jYWNlcnQvZ19jYWNlcnQuY3J0MA0GCSqGSIb3DQEBCwUAA4IBAQBoJDCL65kb
+ZjYgxSptEUIS8OkRRbVeUyQj8Yql+Lug4BNcvDrwaIBDpSAAp+GGFsATK+CzSl3TjZpbataiKrmm
+Sahup/oHsl76jMzf6dC2DFxSabAvdfNriLpUbD40MDbVETBCOKh/bVAk923+la671KlKdOoCRTEj
+b5f4tX5a1qqyaUr+epfDsklxmYumMn+7yh4b0crbkLNnU/A7ccEOhBe5VrMPwi3DnzxevtirvW4r
+StH8tb5rKE2MhDQGJyGI3fpwKJ69FkGsvV1QV86w48F1uPYTQMMeEJIwhE0gdGxK40slwE4qGYOi
+pfXg47eHtOw538hT+uZDDJXrPajvMYID/DCCA/gCAQEwgZEwgYUxCzAJBgNVBAYTAkRFMSgwJgYD
+VQQKEx9UZWNobmlzY2hlIFVuaXZlcnNpdGFldCBEcmVzZGVuMQwwCgYDVQQLEwNaSUgxHDAaBgNV
+BAMTE1RVIERyZXNkZW4gQ0EgLSBHMDIxIDAeBgkqhkiG9w0BCQEWEXBraUB0dS1kcmVzZGVuLmRl
+AgcYLl0sWUgfMAkGBSsOAwIaBQCgggI/MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTE1MTEwNzEyNDQ1N1owIwYJKoZIhvcNAQkEMRYEFFDFNPbA9+Poe0p8rjsYEmul
+4V6BMIGTBgkqhkiG9w0BCQ8xgYUwgYIwCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjAKBggqhkiG
+9w0DBzALBglghkgBZQMEAQIwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIa
+MAsGCWCGSAFlAwQCAzALBglghkgBZQMEAgIwCwYJYIZIAWUDBAIBMIGiBgkrBgEEAYI3EAQxgZQw
+gZEwgYUxCzAJBgNVBAYTAkRFMSgwJgYDVQQKEx9UZWNobmlzY2hlIFVuaXZlcnNpdGFldCBEcmVz
+ZGVuMQwwCgYDVQQLEwNaSUgxHDAaBgNVBAMTE1RVIERyZXNkZW4gQ0EgLSBHMDIxIDAeBgkqhkiG
+9w0BCQEWEXBraUB0dS1kcmVzZGVuLmRlAgcYLl0sWUgfMIGkBgsqhkiG9w0BCRACCzGBlKCBkTCB
+hTELMAkGA1UEBhMCREUxKDAmBgNVBAoTH1RlY2huaXNjaGUgVW5pdmVyc2l0YWV0IERyZXNkZW4x
+DDAKBgNVBAsTA1pJSDEcMBoGA1UEAxMTVFUgRHJlc2RlbiBDQSAtIEcwMjEgMB4GCSqGSIb3DQEJ
+ARYRcGtpQHR1LWRyZXNkZW4uZGUCBxguXSxZSB8wDQYJKoZIhvcNAQEBBQAEggEAYBWLUjWgZDzB
+urm/+SJSpGPT3cezV8UOcRDBd0LQrwxaJV6c3Rr+AG27UwaA4HRCnWNgTjAz57/g2NZbkPUtgIwJ
+UBpRVNEbWkEeCVgeh1SBb1PPb52M9vCMp4ikQYCVBW9whpxTI/BKGCy2VvtHrG5twaHiCuCyjUIa
+p+egM1auwqFOuUUR4n3nj9AgKMe3vorYycvDrzwrczthwFRwUoG0jHUobLqdRKRml7wRsqh69cOT
+OEpeIVP39b40kRqbeoDivqBZ7aI1oVmwk1nsc2c1Di8ud2FqC/Fm6b6LoClkh1mIBotPoSSFxRwO
+P1YzzqUbvXpJQbkidoz8tgABLAAAAAAAAA==
+
+------=_NextPart_000_002A_01D11962.7D5818F0--
