@@ -26,15 +26,23 @@ import time
 import Adafruit_GPIO as GPIO
 import Adafruit_GPIO.SPI as SPI
 
-# Constants
-SSD1306_I2C_ADDRESS = 0x3C	# 011110+SA0+RW - 0x3C or 0x3D
+# --- Constants ---
+# ---------------------------------------------------------
+# 011110+SA0+RW - 0x3C or 0x3D
+# for rasp pi 2 using link-kit: default addr -> 0x3C
+SSD1306_I2C_ADDRESS = 0x3C
+
 SSD1306_SETCONTRAST = 0x81
+
 SSD1306_DISPLAYALLON_RESUME = 0xA4
 SSD1306_DISPLAYALLON = 0xA5
+
 SSD1306_NORMALDISPLAY = 0xA6
 SSD1306_INVERTDISPLAY = 0xA7
+
 SSD1306_DISPLAYOFF = 0xAE
 SSD1306_DISPLAYON = 0xAF
+
 SSD1306_SETDISPLAYOFFSET = 0xD3
 SSD1306_SETCOMPINS = 0xDA
 SSD1306_SETVCOMDETECT = 0xDB
@@ -54,7 +62,7 @@ SSD1306_CHARGEPUMP = 0x8D
 SSD1306_EXTERNALVCC = 0x1
 SSD1306_SWITCHCAPVCC = 0x2
 
-# Scrolling constants
+# --- Scrolling constants ---
 SSD1306_ACTIVATE_SCROLL = 0x2F
 SSD1306_DEACTIVATE_SCROLL = 0x2E
 SSD1306_SET_VERTICAL_SCROLL_AREA = 0xA3
@@ -62,6 +70,7 @@ SSD1306_RIGHT_HORIZONTAL_SCROLL = 0x26
 SSD1306_LEFT_HORIZONTAL_SCROLL = 0x27
 SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = 0x29
 SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = 0x2A
+# ---------------------------------------------------------
 
 
 class SSD1306Base(object):
@@ -73,7 +82,7 @@ class SSD1306Base(object):
 	def __init__(self, width, height, rst, dc=None, sclk=None, din=None, cs=None,
                  gpio=None, spi=None, i2c_bus=None, i2c_address=SSD1306_I2C_ADDRESS,
                  i2c=None):
-		self._log = logging.getLogger('Adafruit_SSD1306.SSD1306Base')
+		self._log = logging.getLogger('Adafruit_SSD1306.SSD1306Base')  # creat basic logger
 		self._spi = None
 		self._i2c = None
 		self.width = width
@@ -102,6 +111,7 @@ class SSD1306Base(object):
 			self._i2c = i2c.get_i2c_device(i2c_address)
 		else:
 			self._log.debug('Using hardware I2C with platform I2C provider.')
+            # using GPIO module in Adafruit_GPIO
 			import Adafruit_GPIO.I2C as I2C
 			if i2c_bus is None:
 				self._i2c = I2C.get_i2c_device(i2c_address)
@@ -149,6 +159,16 @@ class SSD1306Base(object):
 		# Turn on the display.
 		self.command(SSD1306_DISPLAYON)
 
+	def off(self, vccstate=SSD1306_SWITCHCAPVCC):
+		"""Turn off display."""
+		# Save vcc state.
+		self._vccstate = vccstate
+		# Reset and initialize display.
+		self.reset()
+		self._initialize()
+		# Turn on the display.
+		self.command(SSD1306_DISPLAYOFF)
+
 	def reset(self):
 		"""Reset the display."""
 		# Set reset high for a millisecond.
@@ -180,9 +200,17 @@ class SSD1306Base(object):
 			# Write buffer.
 			self._spi.write(self._buffer)
 		else:
+            # Using i2c interface
 			for i in range(0, len(self._buffer), 16):
 				control = 0x40   # Co = 0, DC = 0
 				self._i2c.writeList(control, self._buffer[i:i+16])
+
+        #  def writeList(self, register, data):
+            #  """Write bytes to the specified register."""
+            #  self._bus.write_i2c_block_data(self._address, register, data)
+            #  self._logger.debug("Wrote to register 0x%02X: %s",
+                         #  register, data)
+
 
 	def image(self, image):
 		"""Set buffer to value of Python Imaging Library image.  The image should
