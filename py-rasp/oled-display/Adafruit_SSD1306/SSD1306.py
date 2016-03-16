@@ -159,6 +159,16 @@ class SSD1306Base(object):
 		# Turn on the display.
 		self.command(SSD1306_DISPLAYON)
 
+	def off(self, vccstate=SSD1306_SWITCHCAPVCC):
+		"""Turn off display."""
+		# Save vcc state.
+		self._vccstate = vccstate
+		# Reset and initialize display.
+		self.reset()
+		self._initialize()
+		# Turn on the display.
+		self.command(SSD1306_DISPLAYOFF)
+
 	def reset(self):
 		"""Reset the display."""
 		# Set reset high for a millisecond.
