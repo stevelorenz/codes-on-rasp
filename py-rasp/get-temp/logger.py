@@ -19,7 +19,7 @@ logger.setLevel(logging.DEBUG)
 sh = logging.StreamHandler()
 sh.setLevel(logging.INFO)
 # handler for logging in file
-log_file_path = './display.log'
+log_file_path = './logfile.log'
 fh = logging.FileHandler(log_file_path)
 fh.setLevel(logging.WARNING)
 # ---------------------------------
