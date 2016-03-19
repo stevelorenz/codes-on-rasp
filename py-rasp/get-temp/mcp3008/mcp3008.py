@@ -27,21 +27,20 @@ class MCP3008(object):
                 the second byte is 8 + channel and left shift with 4 bits
                 the third byte is 0 -> 00000000
             the device return 3 bytes as responce
-
         """
         # perform spi transaction
         adc = self.spi.xfer2([1, (8 + channel) <<4, 0])
+        # extract value from data bytes
         data = ((adc[1] & 3) << 8) + adc[2]
         return data
 
-    def readVoltChannel(self, channel=0, vmax=3.3, places=3):
+    def readVoltChannel(self, channel=0, vmax=3.3, places=5):
         """
         read the digital data from MCP3008 and convert it to voltage
             MCP3008: 10bit ADC -> value in number range 0-1023
             spi value -> voltage
                    0  ->  0v
                 1023  ->  vmax
-
         """
         # read spi digital value
         adc = self.spi.xfer2([1, (8 + channel) <<4, 0])
