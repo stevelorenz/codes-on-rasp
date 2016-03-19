@@ -18,8 +18,8 @@ class TMP64(object):
         # creat object to control MCP3008 ADC
         self.mcp3008 = MCP3008(port, device)
 
-    def readTmpValue(self, channel=0, places=3):
-        """get temperature value"""
+    def readTmpValue(self, channel=0, places=1):
+        """convert voltage to temperature value"""
         # get voltage from mcp3008
         volt = self.mcp3008.readVoltChannel(channel)
         # convert voltage to temperature

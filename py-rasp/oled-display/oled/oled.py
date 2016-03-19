@@ -20,7 +20,7 @@ class OLED(object):
     """ Controll display on OLED """
 
     def __init__(self, rst=24, i2c_addr=0x3C):
-        """init OLED class"""
+        """init OLED class with I2C interface"""
         # creat objec to controll SSD1306 driver
         self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=rst, i2c_address=i2c_addr)
         # get display size
@@ -28,9 +28,9 @@ class OLED(object):
         self.height = self.disp.height
         logger.debug('OLED init finished')
 
-    def start(self):
-        """start OLED Display"""
-        # creat image and draw object for text display
+    def on(self):
+        """turn on OLED display"""
+        # creat image and draw object
         self.image = Image.new('1', (self.width, self.height))
         self.draw = ImageDraw.Draw(self.image)
         # clear contents on display
@@ -39,6 +39,17 @@ class OLED(object):
         self.disp.display()
         logger.debug('OLED started')
 
+    def off(self, seconds=3):
+        """turn off OLED in seconds"""
+        # print off_message on screen
+        print('OLED will turn off in %d seconds' %seconds)
+        # print off_message on OLED
+        off_message = 'turn off in %d s' % seconds
+        self.set_text_style('FreeMono.ttf', 13, (5, 25))
+        self.display_text(off_message)
+        sleep(seconds)
+        self.disp.off()
+
     def set_text_style(self, fontname='FreeMono.ttf', fontsize=10, position=(0, 0)):
         """set font face and size"""
         self.font = ImageFont.truetype(fontname, fontsize)
@@ -46,7 +57,7 @@ class OLED(object):
         self.position = position
 
     def display_text(self, text):
-        """display text on OLED"""
+        """display text(string) on OLED"""
         # clear the old cotents in the display
         self.disp.clear()
         self.disp.display()
@@ -57,14 +68,3 @@ class OLED(object):
         self.disp.image(self.image)
         self.disp.display()
         logger.debug('display text finished')
-
-    def off(self, seconds=3):
-        # TODO check if OLED is on
-
-        """turn off OLED in seconds"""
-        # print off_message on OLED
-        off_message = 'turn off in %d s' % seconds
-        self.set_text_style('FreeMono.ttf', 13, (5, 10))
-        self.display_text(off_message)
-        sleep(seconds)
-        self.disp.off()
