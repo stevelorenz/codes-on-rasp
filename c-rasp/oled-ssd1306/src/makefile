@@ -16,18 +16,23 @@ CFLAGS += -O2 -s -DNDEBUG
 endif
 
 # Compiling header and libs
-HEADER = -I./include  # header files
-LIBB = -L./ -lXXX  # lib in current dir
-LIBRA = -l  # lib in lib_path
+HEADER = -I.  # headers
+LIBRA = -lwiringPi  # libs in lib_path
 
 # Compiling rules
-all: object-file
+# ---------------------------------------------------------------
+all: test_oled
 
-object-file: main.o
-		$(CC) main.o $(LIBB) $(LIBRA) -o object-file
+test_oled: test_oled.o ssd1306_i2c.o
+		$(CC) test_oled.o ssd1306_i2c.o $(LIBRA) -o test_oled
 
-main.o: main.cpp
-		$(CC) $(CFLAGS) $(HEADER) main.cpp
+test_oled.o: test_oled.c
+		$(CC) $(CFLAGS) $(HEADER) test_oled.c ssd1306_i2c.c
+
+ssd1306_i2c.o: ssd1306_i2c.c
+		$(CC) $(CFLAGS) $(HEADER) ssd1306_i2c.c
 
 clean:
 		rm *.o
+		rm -rf test_oled
+# ---------------------------------------------------------------

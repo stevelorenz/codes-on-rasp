@@ -10,23 +10,19 @@
 
 // --- Define functions ---
 // ----------------------------------------------
-// init I2C interface and SSD1306
-void ssd1306I2CSetup(void);
+
+/**
+ * @brief: init I2C interface and SSD1306 Driver
+ * @return: a standard file descriptor
+ */
+int ssd1306I2CSetup();
 
 // send command byte to SSD1306
-// use unsigned char to express a byte of data
-void sendCommand(unsigned char command);
+void sendCommand(int fd, unsigned char command);
 // send data byte to SSD1306
-void sendChar(unsigned char data);
+void sendChar(int fd, unsigned char data);
 
 // OLED settings
-void setCursorXY(int row, int col);
-void sendStrXY(const char *string, int X, int Y);
-
-// display operations
-void displayOn(void);
-void displayOff(void);
-void clearDisplay(void);
 
 // ----------------------------------------------
 
@@ -41,9 +37,11 @@ void clearDisplay(void);
 #define SSD1306_DISPLAYOFF 0xAE
 #define SSD1306_NORMALDISPLAY 0xA6
 #define SSD1306_INVERTDISPLAY 0xA7
+#define SSD1306_MULTIPLEX_RATIO 0xA8
 
 // registers
-#define SSD1306_CONTROL_REG 0x00
+#define SSD1306_CONTROL_REG 0x00  // Co = 0, DC = 0
+// #define SSD1306_CONTROL_REG 0x80
 #define SSD1306_DATA_REG 0x40
 
 // scrolling constants
