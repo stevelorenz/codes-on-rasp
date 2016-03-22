@@ -20,6 +20,11 @@
 
 #include "ssd1306_i2c.h"
 
+// --- define constants ---
+#define BUFFSIZE 1024
+#define DELAY 1
+#define UDP_PORT 9000
+
 // flag for keyboard interrupt
 static volatile int keepRunning = 1;
 
@@ -48,12 +53,13 @@ int main(int argc, char* argv[]) {
     // ------------------------------------------
     struct sockaddr_in server_addr;  // server net_addr struct: ipv4
     struct sockaddr_in remote_addr;  // client net_addr struct: ipv4
-    char buffer[BUFSIZ];  // buffer for data trans BUFSIZ defined in stdio.h (1024 for gcc)
+    char buffer[BUFFSIZE];  // buffer for data trans BUFFSIZE defined in stdio.h (1024 for gcc)
+
     memset(&server_addr, 0, sizeof(server_addr));  // clear to zero
     // set server socket struct
     server_addr.sin_family = AF_INET;  // use IP
     server_addr.sin_addr.s_addr = INADDR_ANY;  // recive from any IP
-    server_addr.sin_port = htons(8000);  // udp port
+    server_addr.sin_port = htons(UDP_PORT);  // udp port
 
     int serverSockFd;  // server socket file descriptor
 
@@ -78,28 +84,26 @@ int main(int argc, char* argv[]) {
     int len;  // data len for recived data
     while( keepRunning ) {
         // use revfrom function to get data from client
-        if ((len=(recvfrom(serverSockFd, buffer, BUFSIZ, 0, (struct sockaddr *)&remote_addr, &sin_size))) < 0) {
+        if ((len=(recvfrom(serverSockFd, buffer, BUFFSIZE, 0, (struct sockaddr *)&remote_addr, &sin_size))) < 0) {
             perror("revfrom");
             exit(1);
         }
 
-        buffer[len] = '/0';
-        printf("recieve: %s", buffer);
+        buffer[len] = '\0';
+        printf("recieve: %s\n", buffer);
 
-        close(serverSockFd);  // close server socket
-
-        /* draw_line(1, 1, "hello"); */
-        /* draw_line(2, 1, "world"); */
-        /* updateDisplay(fd); */
-        /* sleep(2); */
-        /* clearDisplay(fd); */
-        /* sleep(2); */
+        draw_line(1, 1, buffer);
+        updateDisplay(fd);
+        sleep(DELAY);
+        clearDisplay(fd);
     }
 
     /* when keyboardinterrupt detected
      * keepRunning == 0
      * */
+    clearDisplay(fd);
     displayOff(fd);   // turn off display
+    close(serverSockFd);  // close server socket
 
     return 0;
 }

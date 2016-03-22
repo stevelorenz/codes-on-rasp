@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nvim ./server.c ./ssd1306_i2c.c ./ssd1306_i2c.h
+nvim ./server.c ./client.c ./ref_code/lfy_udp_client.c ./ref_code/lfy_udp_server.c

@@ -21,10 +21,10 @@ LIBRA = -lwiringPi  # lib in lib_path
 
 # Compiling rules
 # ---------------------------------------------------------
-all: oled-udp
+all: server-udp client-udp
 
-oled-udp: server.o ssd1306_i2c.o
-		$(CC) server.o ssd1306_i2c.o $(LIBRA) -o oled-udp
+server-udp: server.o ssd1306_i2c.o
+		$(CC) server.o ssd1306_i2c.o $(LIBRA) -o server-udp
 
 server.o: server.c
 		$(CC) $(CFLAGS) $(HEADER) server.c
@@ -32,7 +32,14 @@ server.o: server.c
 ssd1306_i2c.o: ssd1306_i2c.c
 		$(CC) $(CFLAGS) $(HEADER) ssd1306_i2c.c
 
+client-udp: client.o
+		$(CC) client.o $(LIBRA) -o client-udp
+
+client.o: client.c
+		$(CC) $(CFLAGS) client.c
+
 clean:
 		rm *.o
-		oled-udp
+		rm server-udp
+		rm client-udp
 # ---------------------------------------------------------

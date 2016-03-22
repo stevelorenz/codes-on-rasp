@@ -8,44 +8,95 @@
 **************************************************************************/
 
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include <wiringPi.h>
+#include <mcp3004.h>
+
+// --- define constants ---
+#define UDP_PORT 9000
+#define BUFFSIZE 1024
+#define DELAY 1
+
+#define BASE 200
+#define SPI_CHAN 0
+
+
+// define functions
+float read_temp(void);
+
+// --- main function ---
 int main(int argc, char *argv[])
 {
-    int clientSockFd;
-    int len;
+    // --- init mcp3004/8 ADC ---
+    // ------------------------------------------
+    if(wiringPiSetup () == -1) {
+        printf("wiringP init do not work. exiting.\n");
+        exit(1);
+    }
+    // init MCP3008-ADC(using SPI interface on channel 0)
+    mcp3004Setup(BASE, SPI_CHAN);
+    // ------------------------------------------
 
+    // -- init socket --
+    // ------------------------------------------
+    int clientSockFd;
     struct sockaddr_in remote_addr;  // server net_addr struct
 
-    int sin_size;
-    char buffer[BUFSIZ];  // buffer for data transmitt
-    memset(&remote_addr,0,sizeof(remote_addr)); //数据初始化--清零
-    remote_addr.sin_family=AF_INET; //设置为IP通信
-    remote_addr.sin_addr.s_addr=inet_addr("127.0.0.1");//服务器IP地址
-    remote_addr.sin_port=htons(8000); //服务器端口号
+    char buffer[BUFFSIZE];  // buffer for data transmitt
 
-         /*创建客户端套接字--IPv4协议，面向无连接通信，UDP协议*/
-    if((clientSockFd=socket(PF_INET,SOCK_DGRAM,0))<0)
+    memset(&remote_addr, 0, sizeof(remote_addr)); // clear to zero
+
+    // set remote_addr struct
+    remote_addr.sin_family=AF_INET; // use IPv4
+    remote_addr.sin_addr.s_addr=inet_addr("127.0.0.1");  // server IP
+    remote_addr.sin_port=htons(UDP_PORT);  // udp port
+
+    // creat UDP socket
+    if((clientSockFd = socket(PF_INET, SOCK_DGRAM, 0)) < 0)
     {
         perror("socket");
-        return 1;
+        exit(1);
     }
-    strcpy(buffer,"This is a test message");
-    printf("sending: '%s'/n",buffer);
+
+    int sin_size;
     sin_size=sizeof(struct sockaddr_in);
+    // ------------------------------------------
 
-    /*向服务器发送数据包*/
-    if((len=sendto(clientSockFd,buffer,strlen(buffer),0,(struct sockaddr *)&remote_addr,sizeof(struct sockaddr)))<0)
-    {
-        perror("recvfrom");
-        return 1;
+    float tmp; //temperature value
+    char tmpChar[20];
+    // send data to UDP server
+    while(1) {
+        tmp = read_temp();
+        sprintf(tmpChar, "%f", tmp);
+        strcpy(buffer, tmpChar);
+        printf("sending: %s \n", buffer);
+        int len;
+        if((len = sendto(clientSockFd, buffer, strlen(buffer), 0, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr))) < 0)
+        {
+            perror("sendto");
+            exit(1);
+        }
+        sleep(DELAY);
     }
 
-    close(clientSockFd);
+    close(clientSockFd);  // close socket
     return 0;
+}
+
+float read_temp(void) {
+    int value;
+    float volts, temp;
+    value = analogRead(BASE);
+    // caculate the temperature
+    volts = (value * 3.3) / 1024.0;
+    temp = (volts - 0.5) * 100;
+    return temp;
 }
