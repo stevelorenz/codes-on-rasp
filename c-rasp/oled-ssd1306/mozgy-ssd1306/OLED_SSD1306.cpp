@@ -202,5 +202,4 @@ void OLED_SSD1306::Init(void) {
   SendCommand( 0x2E );  // Deactivate Scroll
 
   SendCommand( 0xAF );  // Set Display On
-
 }
