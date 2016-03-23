@@ -7,9 +7,10 @@
 * Ver    : 0.1
 **************************************************************************/
 
-#include <string.h>
-#include <stdlib.h>
+#include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <arpa/inet.h>
@@ -23,19 +24,21 @@
 // --- define constants ---
 #define UDP_PORT 9000
 #define BUFFSIZE 1024
+#define MAXVOLT 3.3
 #define DELAY 1
 
 #define BASE 200
 #define SPI_CHAN 0
 
 
-// define functions
+// --- define functions ---
+// get temperature value
 float read_temp(void);
 
 // --- main function ---
 int main(int argc, char *argv[])
 {
-    // --- init mcp3004/8 ADC ---
+    // --- init mcp3008 ADC ---
     // ------------------------------------------
     if(wiringPiSetup () == -1) {
         printf("wiringP init do not work. exiting.\n");
@@ -43,9 +46,10 @@ int main(int argc, char *argv[])
     }
     // init MCP3008-ADC(using SPI interface on channel 0)
     mcp3004Setup(BASE, SPI_CHAN);
+    printf("MCP3008 ADC init done\n");
     // ------------------------------------------
 
-    // -- init socket --
+    // -- init UDP socket --
     // ------------------------------------------
     int clientSockFd;
     struct sockaddr_in remote_addr;  // server net_addr struct
@@ -57,7 +61,7 @@ int main(int argc, char *argv[])
     // set remote_addr struct
     remote_addr.sin_family=AF_INET; // use IPv4
     remote_addr.sin_addr.s_addr=inet_addr("127.0.0.1");  // server IP
-    remote_addr.sin_port=htons(UDP_PORT);  // udp port
+    remote_addr.sin_port=htons(UDP_PORT);  // UDP port
 
     // creat UDP socket
     if((clientSockFd = socket(PF_INET, SOCK_DGRAM, 0)) < 0)
@@ -68,16 +72,20 @@ int main(int argc, char *argv[])
 
     int sin_size;
     sin_size=sizeof(struct sockaddr_in);
+    printf("UDP socket init done\n");
     // ------------------------------------------
 
-    float tmp; //temperature value
-    char tmpChar[20];
-    // send data to UDP server
+    // --- main loop ---
+    // read tmp value and send it to server
+    float tmp; //tmp value
+    char tmpChar[6]; // tmp char
+
     while(1) {
-        tmp = read_temp();
-        sprintf(tmpChar, "%f", tmp);
-        strcpy(buffer, tmpChar);
-        printf("sending: %s \n", buffer);
+        tmp = read_temp();  // get tmp value
+        sprintf(tmpChar, "%.1f", tmp);  // convert float to string
+        strcpy(buffer, tmpChar);  // copy tmp char into buffer
+        printf("sending: %s\n", buffer);
+        // send data in buffer to server
         int len;
         if((len = sendto(clientSockFd, buffer, strlen(buffer), 0, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr))) < 0)
         {
@@ -88,15 +96,31 @@ int main(int argc, char *argv[])
     }
 
     close(clientSockFd);  // close socket
+    printf("UDP Client closed\n");
     return 0;
 }
 
+/**
+ * @brief: get temperature using TMP64 sensor and MCP3008 ADC
+ *
+ * @return: temperature value
+ */
 float read_temp(void) {
     int value;
-    float volts, temp;
+    float volt, volt_m, tmp;
+
+    // read digital value from MCP3008
     value = analogRead(BASE);
-    // caculate the temperature
-    volts = (value * 3.3) / 1024.0;
-    temp = (volts - 0.5) * 100;
-    return temp;
+
+    // clac the voltage
+    volt = (value * MAXVOLT) / 1024.0;
+
+    // convert voltage to temperature
+    tmp = (volt - 0.5) * 100;
+    volt_m = volt * 1000;  //convert V to mV
+    tmp = 25 + (volt_m - 750) / 10.0;
+
+    // round the tmp value to 1 decimal places
+    tmp = roundf(tmp * 10) / 10;
+    return tmp;
 }
