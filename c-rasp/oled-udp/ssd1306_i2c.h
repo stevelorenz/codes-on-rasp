@@ -6,14 +6,19 @@
 * Date   : 2016-03-20
 * Ver    : 0.3
 **************************************************************************/
+
 #ifndef SSD1306_I2C_H
 #define SSD1306_I2C_H
 
 // --- Define functions ---
 // ----------------------------------------------
 /**
- * @brief: init I2C interface and SSD1306 Driver
- * @return: a standard file descriptor
+ * @brief ssd1306I2CSetup
+ *
+ * @param i2cAddr: I2C device address
+ *        on Rpi, you can use i2cdetect -y 1 to get addr
+ *
+ * @return standard file descriptor for I2C operations
  */
 int ssd1306I2CSetup(unsigned char i2cAddr);
 

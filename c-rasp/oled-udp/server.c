@@ -4,7 +4,7 @@
 * Author : Xiang,Zuo
 * Mail   : xianglinks@gmail.com
 * Date   : 2016-03-22
-* Ver    : 0.1
+* Ver    : 0.3
 **************************************************************************/
 
 #include <signal.h>
@@ -29,16 +29,17 @@
 // flag for keyboard interrupt
 static volatile int keepRunning = 1;
 
-// signal handler
-void intHandler(int sig) {
+// interrupt signal handler
+void intHandler(int sig)
+{
     keepRunning = 0;
 }
 
 // --- main function ---
-int main(int argc, char* argv[]) {
-
-    /* ctrl + c as interrupt signal
-     * if interrupt detected -> keepRunning == 0
+int main(int argc, char* argv[])
+{
+    /* catch interrupt signal(SIGINT), i.e. ctrl+c
+     * if interrupt detected -> keepRunning = 0
      * */
     signal(SIGINT, intHandler);
 
@@ -110,9 +111,7 @@ int main(int argc, char* argv[]) {
         clearDisplay(fd);
     }
 
-    /* when keyboardinterrupt detected
-     * keepRunning == 0
-     * */
+    // --- routine when interrupt detected ---
     clearDisplay(fd);
     // print off info on display
     draw_line(2, 1, "off in 2 seconds");
@@ -120,7 +119,7 @@ int main(int argc, char* argv[]) {
     sleep(2);
     displayOff(fd);   // turn off display
     close(serverSockFd);  // close server socket
-    printf("UDP Server closed\n");
+    printf("\nUDP Server closed\n");
 
     return 0;
 }

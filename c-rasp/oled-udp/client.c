@@ -4,10 +4,11 @@
 * Author : Xiang,Zuo
 * Mail   : xianglinks@gmail.com
 * Date   : 2016-03-22
-* Ver    : 0.1
+* Ver    : 0.3
 **************************************************************************/
 
 #include <math.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,9 +36,23 @@
 // get temperature value
 float read_temp(void);
 
+// flag for keyboard interrupt
+static volatile int keepRunning = 1;
+
+// interrupt signal handler
+void intHandler(int sig)
+{
+    keepRunning = 0;
+}
+
 // --- main function ---
 int main(int argc, char *argv[])
 {
+    /* catch interrupt signal(SIGINT), i.e. ctrl+c
+     * if interrupt detected -> keepRunning = 0
+     * */
+    signal(SIGINT, intHandler);
+
     // --- init mcp3008 ADC ---
     // ------------------------------------------
     if(wiringPiSetup () == -1) {
@@ -80,7 +95,7 @@ int main(int argc, char *argv[])
     float tmp; //tmp value
     char tmpChar[6]; // tmp char
 
-    while(1) {
+    while(keepRunning) {
         tmp = read_temp();  // get tmp value
         sprintf(tmpChar, "%.1f", tmp);  // convert float to string
         strcpy(buffer, tmpChar);  // copy tmp char into buffer
@@ -95,8 +110,9 @@ int main(int argc, char *argv[])
         sleep(DELAY);
     }
 
+    // --- routine when interrupt detected ---
     close(clientSockFd);  // close socket
-    printf("UDP Client closed\n");
+    printf("\nUDP Client closed\n");
     return 0;
 }
 
