@@ -55,17 +55,13 @@ void sendData(int fd, unsigned char data)
 void displayOn(int fd)
 {
     sendCommand(fd, SSD1306_DISPLAYON);
-    printf("turn on the OLED display\n");
+    clearDisplay(fd);
 }
 
 // turn off the display
 void displayOff(int fd)
 {
     clearDisplay(fd);
-    printf("OLED display turned off in 2 seconds\n");
-    draw_line(2, 1, "off in 2 seconds");
-    updateDisplay(fd);
-    sleep(2);  // sleep for 2 seconds
     sendCommand(fd, SSD1306_DISPLAYOFF);
 }
 
@@ -95,11 +91,6 @@ int ssd1306I2CSetup(unsigned char i2cAddr)
         printf("I2C interface init failed, with errno\n", errno);
         exit(1);
     }
-
-    int byte;
-	for(byte=0;byte<1024;byte++){
-		frame[byte] = 0x00;
-	}
 
     // init SSD1306 settings
     sendCommand(fd, SSD1306_DISPLAYOFF);  // Display off
@@ -161,8 +152,6 @@ int ssd1306I2CSetup(unsigned char i2cAddr)
     sendCommand(fd, 0x07);
 
     sendCommand(fd, 0x2E);  // Deactivate Scroll
-
-    sendCommand(fd, SSD1306_DISPLAYON);  // Set Display On
 
     return fd;  // return file descriptor
 }

@@ -4,7 +4,7 @@
 * Author : Xiang,Zuo
 * Mail   : xianglinks@gmail.com
 * Date   : 2016-03-22
-* Ver    : 0.1
+* Ver    : 0.3
 **************************************************************************/
 
 #include <signal.h>
@@ -25,19 +25,21 @@
 #define DELAY 1
 #define UDP_PORT 9000
 
+// --- catch keyboardinterrupt ---
 // flag for keyboard interrupt
 static volatile int keepRunning = 1;
 
-// signal handler
-void intHandler(int sig) {
+// interrupt signal handler
+void intHandler(int sig)
+{
     keepRunning = 0;
 }
 
 // --- main function ---
-int main(int argc, char* argv[]) {
-
-    /* ctrl + c as interrupt signal
-     * if interrupt detected -> keepRunning == 0
+int main(int argc, char* argv[])
+{
+    /* catch interrupt signal(SIGINT), i.e. ctrl+c
+     * if interrupt detected -> keepRunning = 0
      * */
     signal(SIGINT, intHandler);
 
@@ -46,10 +48,15 @@ int main(int argc, char* argv[]) {
     int fd;  // file descriptor for I2C writing
     fd = ssd1306I2CSetup(0x3C);  // init SSD1306 and I2C interface
     displayOn(fd);
+    // print init info on display
     printf("OLED display init finished\n");
+    draw_line(2, 1, "init done");
+    updateDisplay(fd);
+    sleep(1);  // wait for one second
+    clearDisplay(fd);
     // ------------------------------------------
 
-    // init socket
+    // init UDP socket
     // ------------------------------------------
     struct sockaddr_in server_addr;  // server net_addr struct: ipv4
     struct sockaddr_in remote_addr;  // client net_addr struct: ipv4
@@ -59,28 +66,34 @@ int main(int argc, char* argv[]) {
     // set server socket struct
     server_addr.sin_family = AF_INET;  // use IP
     server_addr.sin_addr.s_addr = INADDR_ANY;  // recive from any IP
-    server_addr.sin_port = htons(UDP_PORT);  // udp port
+    server_addr.sin_port = htons(UDP_PORT);  // UDP port
 
     int serverSockFd;  // server socket file descriptor
 
-    // creat server_socket
+    // creat server socket
     if ((serverSockFd = socket(PF_INET, SOCK_DGRAM, 0)) < 0 ) {
         // creat failed
         perror("socket");
         exit(1);
     }
 
-    // bind server_socket to server_addr struct
+    // bind server socket to server_addr struct
     if (bind(serverSockFd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) < 0) {
         perror("bind");
         exit(1);
     }
 
     int sin_size = sizeof(struct sockaddr_in);
+
     printf("Server UDP socket init and bind finished\n");
+    // print socket init info on display
+    draw_line(2, 1, "socket init done");
+    updateDisplay(fd);
+    sleep(1);
+    clearDisplay(fd);
     // ------------------------------------------
 
-    // -- main loop: recive tmp value and show on OLED --
+    // -- main loop: recive tmp value and show it on display --
     int len;  // data len for recived data
     while( keepRunning ) {
         // use revfrom function to get data from client
@@ -89,21 +102,24 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
 
-        buffer[len] = '\0';
+        buffer[len] = '\0'; // add string flag at the end of buffer
         printf("recieve: %s\n", buffer);
 
-        draw_line(1, 1, buffer);
+        draw_line(2, 1, buffer);
         updateDisplay(fd);
         sleep(DELAY);
         clearDisplay(fd);
     }
 
-    /* when keyboardinterrupt detected
-     * keepRunning == 0
-     * */
+    // --- routine when interrupt detected ---
     clearDisplay(fd);
+    // print off info on display
+    draw_line(2, 1, "off in 2 seconds");
+    updateDisplay(fd);
+    sleep(2);
     displayOff(fd);   // turn off display
     close(serverSockFd);  // close server socket
+    printf("\nUDP Server closed\n");
 
     return 0;
 }

@@ -16,23 +16,23 @@ CFLAGS += -O2 -s -DNDEBUG
 endif
 
 # Compiling header and libs
-HEADER = -I.  # headers
-LIBRA = -lwiringPi  # libs in lib_path
+HEADER = -I./  # header files
+LIBRA = -lwiringPi  # lib in lib_path
 
 # Compiling rules
-# ---------------------------------------------------------------
-all: test_oled
+# ---------------------------------------------------------
+all: hello-world
 
-test_oled: test_oled.o ssd1306_i2c.o
-		$(CC) test_oled.o ssd1306_i2c.o $(LIBRA) -o test_oled
+hello-world: hello_world.o ssd1306_i2c.o
+		$(CC) hello_world.o ssd1306_i2c.o $(LIBRA) -o hello-world
 
-test_oled.o: test_oled.c
-		$(CC) $(CFLAGS) $(HEADER) test_oled.c ssd1306_i2c.c
+hello_world.o: hello_world.c
+		$(CC) $(CFLAGS) $(HEADER) hello_world.c
 
 ssd1306_i2c.o: ssd1306_i2c.c
 		$(CC) $(CFLAGS) $(HEADER) ssd1306_i2c.c
 
 clean:
 		rm *.o
-		rm -rf test_oled
-# ---------------------------------------------------------------
+		rm hello-world
+# ---------------------------------------------------------

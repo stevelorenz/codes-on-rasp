@@ -17,7 +17,7 @@ endif
 
 # Compiling header and libs
 HEADER = -I.  # header files
-LIBRA = -lwiringPi  # lib in lib_path
+LIBRA = -lwiringPi -lm  # lib in lib_path
 
 # Compiling rules
 # ---------------------------------------------------------
