@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
             exit(1);
         }
 
-        buffer[len] = '\0'; // add string flag at the end of buffer
+        buffer[len] = '\0';  // add string flag at the end of buffer
         printf("recieve: %s\n", buffer);
 
         draw_line(2, 1, buffer);

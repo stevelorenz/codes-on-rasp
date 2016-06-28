@@ -132,7 +132,6 @@ float read_temp(void) {
     volt = (value * MAXVOLT) / 1024.0;
 
     // convert voltage to temperature
-    tmp = (volt - 0.5) * 100;
     volt_m = volt * 1000;  //convert V to mV
     tmp = 25 + (volt_m - 750) / 10.0;
 

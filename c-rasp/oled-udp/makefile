@@ -4,8 +4,8 @@ CC = gcc
 # Compiling options
 CFLAGS = -c -Wall
 
-# Option for Debug & Release 
-ifeq ($(BUILD), debug)   
+# Option for Debug & Release
+ifeq ($(BUILD), debug)
 # "Debug" build - no optimization, and debugging symbols
 # $ make BUILD=debug
 CFLAGS += -O0 -g
