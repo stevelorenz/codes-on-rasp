@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Date   : So 08 Nov 2015 10:23:39 CET
-# @About  :
+# @About  : Send ip addr to remote host with email
 # @Author : Xiang,Zuo
 # @Mail   : xianglinks@gmail.com
 
