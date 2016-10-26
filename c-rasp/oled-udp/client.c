@@ -4,7 +4,6 @@
 * Author : Xiang,Zuo
 * Mail   : xianglinks@gmail.com
 * Date   : 2016-03-22
-* Ver    : 0.3
 **************************************************************************/
 
 #include <math.h>
@@ -53,7 +52,7 @@ int main(int argc, char *argv[])
      * */
     signal(SIGINT, intHandler);
 
-    // --- init mcp3008 ADC ---
+    // --- init MCP3008 ADC ---
     // ------------------------------------------
     if(wiringPiSetup () == -1) {
         printf("wiringP init do not work. exiting.\n");
@@ -102,8 +101,12 @@ int main(int argc, char *argv[])
         printf("sending: %s\n", buffer);
         // send data in buffer to server
         int len;
+        /*
+         * strlen(): scan from somewhere to the first str_end_flag('\0') and return the counter, exclusive the str_end_flag
+         * therefore the str_end_flag should be added at the reciver
+         * */
         if((len = sendto(clientSockFd, buffer, strlen(buffer), 0, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr))) < 0)
-        {
+        {   // return -1 when error
             perror("sendto");
             exit(1);
         }
@@ -133,7 +136,9 @@ float read_temp(void) {
 
     // convert voltage to temperature
     volt_m = volt * 1000;  //convert V to mV
+    // TMP64, scale factor:10 and offset:0.5V
     tmp = 25 + (volt_m - 750) / 10.0;
+    // tmp = (volt_m - 500) / 10.0;  // same result
 
     // round the tmp value to 1 decimal places
     tmp = roundf(tmp * 10) / 10;
