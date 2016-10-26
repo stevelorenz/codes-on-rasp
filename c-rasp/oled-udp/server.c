@@ -4,7 +4,6 @@
 * Author : Xiang,Zuo
 * Mail   : xianglinks@gmail.com
 * Date   : 2016-03-22
-* Ver    : 0.3
 **************************************************************************/
 
 #include <signal.h>
@@ -78,6 +77,7 @@ int main(int argc, char* argv[])
     }
 
     // bind server socket to server_addr struct
+    // this step is not nesssary if reciving from any IPs
     if (bind(serverSockFd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) < 0) {
         perror("bind");
         exit(1);
